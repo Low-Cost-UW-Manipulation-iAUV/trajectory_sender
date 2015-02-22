@@ -7,6 +7,7 @@ find_package(catkin REQUIRED COMPONENTS
 	std_msgs
 	geometry_msgs
 	nav_msgs
+	control_msgs
 	tf
 	genmsg
 	actionlib_msgs
@@ -15,7 +16,6 @@ find_package(catkin REQUIRED COMPONENTS
 
 find_package(Boost REQUIRED COMPONENTS system)
 
-generate_messages(DEPENDENCIES actionlib_msgs)
 ## Declare a catkin package
 catkin_package(
 	CATKIN_DEPENDS 
@@ -23,6 +23,7 @@ catkin_package(
 	std_msgs
 	geometry_msgs
 	nav_msgs
+	control_msgs
 	tf
 	INCLUDE_DIRS
 	include
@@ -32,8 +33,8 @@ catkin_package(
 ## Build talker and listener
 include_directories(include ${catkin_INCLUDE_DIRS} SYSTEM ${Boost_INCLUDE_DIR})
 
-add_executable(sonar_transformer src/sonar_transformation.cpp )
-target_link_libraries(sonar_transformer ${catkin_LIBRARIES})
+add_executable(traj_sender src/traj_sender.cpp )
+target_link_libraries(traj_sender ${catkin_LIBRARIES})
 
 
-add_dependencies(sonar_position std_msgs_generate_messages_cpp geometry_msgs_generate_messages_cpp sensor_msgs_generate_messages_cpp nav_msgs_generate_messages_cpp )
+add_dependencies(traj_sender std_msgs_generate_messages_cpp geometry_msgs_generate_messages_cpp sensor_msgs_generate_messages_cpp nav_msgs_generate_messages_cpp control_msgs_generate_messages_cpp)

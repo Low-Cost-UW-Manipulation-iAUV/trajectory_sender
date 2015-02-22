@@ -6,7 +6,7 @@ trajectory_sender::trajectory_sender(const ros::NodeHandle &nh) {
     get_current_position();
     get_goals();
     send_goals();
-    sub_sonar = nh_.subscribe<snav_msgs::Odometry>("/odometry/filtered", 1, &trajectory_sender::sub_callback, this);
+    sub_sonar = nh_.subscribe<nav_msgs::Odometry>("/odometry/filtered", 1, &trajectory_sender::sub_callback, this);
 
 }
 
@@ -93,7 +93,7 @@ void trajectory_sender::get_goals(void) {
 
     //
 
-    for (int x = 0; x < 360, x++) {
+    for (int x = 0; x < 360; x++) {
         // x = initial point x plus sin of x deg * radius
         goals.at(7).trajectory.points.at(0).positions.at(x) = goals.at(0).trajectory.points.at(0).positions.at(0) + sin((x * M_PI / 180) * 0.1 );
         // on y
@@ -115,11 +115,11 @@ void trajectory_sender::send_goals(void) {
     ROS_INFO("Action server started, sending goal");
 
     // send all the goals one after the other
-    for (std::std::vector<control_msgs::FollowJointTrajectoryAction>::Iterator it = goals.begin(), it != goals.end(), ++it) {
+    for (std::vector<control_msgs::FollowJointTrajectoryGoal>::iterator it = goals.begin(); it != goals.end(); ++it) {
 
         ac.sendGoal(*it);
 
-        bool finished_before_timeout = ac.waitForResult(*it.trajectory.points.at(0).time_from_start * 2) ;
+        bool finished_before_timeout = ac.waitForResult(it->trajectory.points.at(0).time_from_start * 2) ;
 
         if (finished_before_timeout) {
             actionlib::SimpleClientGoalState state = ac.getState();
